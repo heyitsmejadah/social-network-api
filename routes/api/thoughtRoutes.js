@@ -1,8 +1,8 @@
 const router = require("express").Router();
 
-const { getThoughts } = require("../../controllers/thoughtController");
+const { getThoughts } = require("../../controllers");
 
-//  /api/thoughts
+//  /api/thoughts/
 router.route("/").get(getThoughts);
 
 module.exports = router;
