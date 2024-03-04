@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Thought } = require("../models");
 
 module.exports = {
   // get all users
@@ -72,10 +72,53 @@ module.exports = {
           message: "No user found for that ID!",
         });
       }
-      res.json(deleteUser);
+      await Thought.deleteMany({ _id: { $in: deleteUser.thoughts }});
+      res.json({ message: "User and associated thoughts deleted!"});
     } catch (err) {
       console.log(err);
       res.status(500).json(err);
     }
   },
+
+  async addFriend(req,res) {
+    try {
+      const addFriend = await User.findByIdAndUpdate(
+        {_id: req.params.userId},
+        { $addToSet: {friends: req.params.friendId} },
+        {new: true}
+      );
+
+      if (!addFriend) {
+        return res.status(404).json({
+          message: "No friend found by that ID!"
+        });
+      }
+
+      res.json(addFriend);
+    } catch (err) {
+      res.status(500).json(err);
+      console.log(err);
+    }
+  },
+
+  async deleteFriend(req,res) {
+    try {
+      const deleteFriend = await User.findByIdAndDelete(
+        {_id: req.params.userId},
+        {$addToSet: {friends: req.params.friendId}},
+        {new: true}
+      );
+
+      if (!deleteFriend) {
+        return res.status(404).json({
+          message: "No friend found by that ID!"
+        });
+      }
+
+      res.json(deleteFriend);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json(err);
+    }
+  }
 };
