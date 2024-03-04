@@ -39,6 +39,7 @@ module.exports = {
     }
   },
 
+// update one user
   async updateUser(req, res) {
     try {
       const getUser = await User.findOneAndUpdate(
@@ -58,6 +59,8 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+
+//   delete one user
   async deleteUser(req, res) {
     try {
       const deleteUser = await User.findOneAndDelete({
